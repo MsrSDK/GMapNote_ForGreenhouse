@@ -1,54 +1,51 @@
 
-#unloosen-main-div input {
-  background-color: #ffffff;
-  width: 100%;
-  color: #333;
-  border: 1px solid #666;
-  box-sizing: border-box;
-  border-radius: 2px;
+#unloosen-main-div {
+  input {
+    background-color: #ffffff;
+    width: 100%;
+    color: #333;
+    border: 1px solid #666;
+    box-sizing: border-box;
+    border-radius: 2px;
+  }
+
+  select {
+    background-color: #ffffff;
+    width: 100%;
+    color: #333;
+    border: 1px solid #666;
+    box-sizing: border-box;
+    border-radius: 2px;
+  }
+
+  input {
+    &.has-default-value { background-color: #d7d7d7;}
+    &:focus { border: 2px solid #666; }
+    &:nth-of-type(1) { background-color: #add8e6; }
+    &:nth-of-type(6) { background-color: #add8e6; }
+    &:nth-of-type(7) { background-color: #add8e6; }
+    &:nth-of-type(8) { background-color: #add8e6; }
+    &:nth-of-type(10) { background-color: #add8e6; }
+    &:nth-of-type(11) { background-color: #add8e6; }
+    &:nth-of-type(16) { background-color: #d7d7d7; }
+    &:nth-of-type(17) { background-color: #d7d7d7; }
+  }
+
+   button {
+   width: auto;
+   margin-top: 6px;
+   padding: 6px;
+   background-color: #ffffff;
+   color: blue;
+   border: 2px solid blue;
+   box-sizing: border-box;
+   border-radius: 4px;
+   cursor: pointer;
+   box-shadow: 2px 2px;
 }
 
-#unloosen-main-div select {
-  background-color: #ffffff;
-  width: 100%;
-  color: #333;
-  border: 1px solid #666;
-  box-sizing: border-box;
-  border-radius: 2px;
-}
-
-#unloosen-main-div input.has-default-value {
-  background-color: #d7d7d7;
-}
-
-#unloosen-main-div input:nth-of-type(1) { background-color: #add8e6; }
-#unloosen-main-div input:nth-of-type(6) { background-color: #add8e6; }
-#unloosen-main-div input:nth-of-type(7) { background-color: #add8e6; }
-#unloosen-main-div input:nth-of-type(8) { background-color: #add8e6; }
-#unloosen-main-div input:nth-of-type(10) { background-color: #add8e6; }
-#unloosen-main-div input:nth-of-type(11) { background-color: #add8e6; }
-
-#unloosen-main-div input:focus {
-  border: 2px solid #666;
-}
-
-#unloosen-main-div button {
-  width: auto;
-  margin-top: 6px;
-  padding: 6px;
-  background-color: #ffffff;
-  color: blue;
-  border: 2px solid blue;
-  box-sizing: border-box;
-  border-radius: 4px;
-  cursor: pointer;
-  box-shadow: 2px 2px;
-}
-
-#unloosen-main-div button:hover {
-  background-color: #f0f0f0;
-}
-
-#unloosen-main-div button:active {
-  background-color: #b0c4de;
+  button {
+    &:hover { background-color: #f0f0f0; }
+    &:active { background-color: #b0c4de; }
+  }
 }
