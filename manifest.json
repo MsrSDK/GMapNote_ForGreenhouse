@@ -1,14 +1,14 @@
 {
     "manifest_version": 3,
-    "name": "unloosen quickstart",
-    "description": "this extension is running by ruby!",
+    "name": "GMapNote_ForGreenhouse",
+    "description": "Retrieve the contents of the GoogleMap display and record them as a memo.",
     "version": "0.0.1",
     "content_scripts": [
         {
             "js": [
                 "node_modules/unloosen-ruby-loader/dist/entry/loader-content-script.esm.js"
             ],
-            "matches": ["https://www.example.com/"]
+            "matches": ["https://www.google.com/maps/*"]
         }
     ],
     "content_security_policy": {

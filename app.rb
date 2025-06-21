@@ -1,8 +1,7 @@
 # app.rb
 require "unloosen"
 
-content_script site: "www.example.com" do
-    # h1 = document.getElementById("")
-    h1 = document.querySelector("h1")
-    h1.innerText = "Unloosen Example Page!"
+content_script site: "www.google.com/maps/*" do
+    puts "Hello Google Maps! by puts."
+    console.log("Hello Google Maps! by console.log.")
 end
