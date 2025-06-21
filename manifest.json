@@ -1,0 +1,23 @@
+{
+    "manifest_version": 3,
+    "name": "unloosen quickstart",
+    "description": "this extension is running by ruby!",
+    "version": "0.0.1",
+    "content_scripts": [
+        {
+            "js": [
+                "node_modules/unloosen-ruby-loader/dist/entry/loader-content-script.esm.js"
+            ],
+            "matches": ["https://www.example.com/"]
+        }
+    ],
+    "content_security_policy": {
+        "extension_pages": "script-src 'self' 'wasm-unsafe-eval'; object-src 'self';"
+    },
+    "web_accessible_resources": [
+        {
+          "resources": ["*"],
+          "matches": ["<all_urls>"]
+        }
+    ]
+}
