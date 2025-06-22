@@ -314,14 +314,15 @@ content_script site: "www.google.com/maps/*" do
             end
         end
     end
-    bottom_btn_panel.appendChild(save_value_button)
 
     def create_table(retrieved_array_data)
         table_element = document.createElement("table")
-        table_element.style.width = "90%"
+        table_element.style.width = "100%"
+        table_element.style.tableLayout = "fixed"
         table_element.border_collapse = "collapse"
         table_element.margin = "12px"
         table_header = document.createElement("thead")
+        table_header.style.backgroundColor = "#CDF0EA"
         header_row = document.createElement("tr")
         key_array = retrieved_array_data[0].keys
         key_array.each do |key|
@@ -352,7 +353,11 @@ content_script site: "www.google.com/maps/*" do
             begin
                 retrieved_array_data = JSON.load(retrieved_json_string)
                 if retrieved_array_data.is_a?(Array)
+                    table_wrapper = document.createElement("div")
+                    table_wrapper.margin = "12px"
+                    table_wrapper.style.scroll = "hidden"
                     table = create_table(retrieved_array_data)
+                    table_wrapper.appendChild(table)
                 end
             rescue => e
                 puts "レコードの保存に失敗しました :("
@@ -364,6 +369,7 @@ content_script site: "www.google.com/maps/*" do
         end
 
         modal_con = document.createElement("div")
+        modal_con.id = "unloosen-modal-div"
         modal_con.style.position = "absolute"
         modal_con.style.margin = "auto"
         modal_con.style.height = "80%"
@@ -379,15 +385,23 @@ content_script site: "www.google.com/maps/*" do
         modal_con.style.margin_top = "6px"  # 上側の余白
         modal_con.style.padding = "6px"    # 内側の余白
         modal_con.style.zIndex = "1000"    # 他の要素より手前に表示
+        modal_btn_wrapper = document.createElement("div")
+        modal_btn_wrapper.style.display = "flex"
+        modal_btn_wrapper.style.width = "100%"
+        modal_btn_wrapper.style.bottom = "0"
+        modal_btn_wrapper.style.justifyContent = "flexEnd"
         modal_close_btn = document.createElement("button")
         modal_close_btn.textContent = "閉じる"
+        modal_close_btn.position = "flex"
+        modal_close_btn.bottom = "0"
         modal_close_btn.style.marginTop = "6px"
-        modal_close_btn.classList.add("unloosen-button", "secondary")
+        modal_close_btn.classList.add("unloosen-button", "nutral")
         modal_close_btn.addEventListener("click") do
             modal_con.remove
         end
-        modal_con.appendChild(table)
-        modal_con.appendChild(modal_close_btn)
+        modal_btn_wrapper.appendChild(modal_close_btn)
+        modal_con.appendChild(table_wrapper)
+        modal_con.appendChild(modal_btn_wrapper)
         content_container.appendChild(modal_con) if content_container
     end
 
@@ -401,5 +415,6 @@ content_script site: "www.google.com/maps/*" do
     end
 
     bottom_btn_panel.appendChild(show_table_button)
+    bottom_btn_panel.appendChild(save_value_button)
     main_div.appendChild(bottom_btn_panel)
 end

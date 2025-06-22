@@ -83,3 +83,31 @@
     }
   }
 }
+
+#unloosen-modal-div {
+  button {
+    width: auto;
+    margin-top: 6px;
+    padding: 6px;
+    box-sizing: border-box;
+    border-radius: 4px;
+    cursor: pointer;
+    box-shadow: #666 2px 2px;
+    &.nutral {
+      background-color: #F9F9F9;
+      color: #333;
+      border: 2px solid #666;
+      &:hover { background-color: #f0f0f0; }
+      &:active { background-color: #b0c4de; }
+    }
+    &.danger-primary {
+      background-color: red;
+      color: #F9F9F9;
+      border: 2px solid red;
+      box-shadow: #666 2px 2px;
+      &:hover { background-color: rgb(233, 103, 103); }
+      &:active { background-color: rgb(177, 0, 0); }
+    }
+  }
+  th, td { border: solid 1px; }
+}
