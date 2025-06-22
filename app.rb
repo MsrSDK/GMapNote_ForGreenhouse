@@ -390,6 +390,7 @@ content_script site: "www.google.com/maps/*" do
         modal_btn_wrapper.style.width = "100%"
         modal_btn_wrapper.style.bottom = "0"
         modal_btn_wrapper.style.justifyContent = "flexEnd"
+        # モーダル閉じるボタン
         modal_close_btn = document.createElement("button")
         modal_close_btn.textContent = "閉じる"
         modal_close_btn.position = "flex"
@@ -399,7 +400,16 @@ content_script site: "www.google.com/maps/*" do
         modal_close_btn.addEventListener("click") do
             modal_con.remove
         end
+        # レコード一括削除ボタン
+        delete_record_btn = document.createElement("button")
+        delete_record_btn.textContent = "レコード一括削除"
+        delete_record_btn.style.marginLeft = "12px"
+        delete_record_btn.classList.add("unloosen-button", "danger-primary")
+        delete_record_btn.addEventListener("click") do
+            JS.global[:localStorage].removeItem(save_key)
+        end
         modal_btn_wrapper.appendChild(modal_close_btn)
+        modal_btn_wrapper.appendChild(delete_record_btn)
         modal_con.appendChild(table_wrapper)
         modal_con.appendChild(modal_btn_wrapper)
         content_container.appendChild(modal_con) if content_container
