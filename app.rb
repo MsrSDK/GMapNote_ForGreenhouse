@@ -188,34 +188,59 @@ content_script site: "www.google.com/maps/*" do
         end
         main_div.appendChild(grid_div)
     end
-    # ボタンを作成
+    # 値抽出ボタンを作成
     get_value_button = document.createElement("button")
     get_value_button.textContent = "値を取得"
     get_value_button.style.marginTop = "6px"
     get_value_button.classList.add("unloosen-button", "secondary")
     get_value_button.addEventListener("click") do
-        if c_name = document.getElementsByTagName("h1")[0]&.textContent
-            grid_div.querySelectorAll("input")[0].value = c_name
+        begin
+            if c_name = document.getElementsByTagName("h1")[0]&.textContent
+                grid_div.querySelectorAll("input")[0].value = c_name
+            end
+        rescue => e
+            puts "顧客候補名の取得に失敗しました :("
+            # puts "Error: #{e.message}"
         end
-        if pluscode_element = document.querySelector("button[data-tooltip='Plus Code をコピーします']")
-            pluscode = pluscode_element&.textContent
-            pluscode = pluscode.gsub("、", " ")    # 、をスペースに置換
-            pluscode = pluscode.split(" ")
-            grid_div.querySelectorAll("input")[5].value = pluscode[-1] if pluscode[-1]    # 都道府県
-            grid_div.querySelectorAll("input")[6].value = pluscode[1] if pluscode[1]    # 所在市区町村
+        begin
+            if pluscode_element = document.querySelector("button[data-tooltip='Plus Code をコピーします']")
+                pluscode = pluscode_element&.textContent
+                pluscode = pluscode.gsub("、", " ")    # 、をスペースに置換
+                pluscode = pluscode.split(" ")
+                grid_div.querySelectorAll("input")[5].value = pluscode[-1] if pluscode[-1]    # 都道府県
+                grid_div.querySelectorAll("input")[6].value = pluscode[1] if pluscode[1]    # 所在市区町村
+            end
+        rescue => e
+            puts "都道府県または市区町村の取得に失敗しました :("
+            # puts "Error: #{e.message}"
         end
-        if address_elements = document.querySelector("button[data-tooltip='住所をコピーします']")
-            address = address_elements&.textContent.split(" ")[1]
-            grid_div.querySelectorAll("input")[7].value = address if address
+        begin
+            if address_elements = document.querySelector("button[data-tooltip='住所をコピーします']")
+                address = address_elements&.textContent.split(" ")[1]
+                grid_div.querySelectorAll("input")[7].value = address if address
+            end
+        rescue => e
+            puts "住所の取得に失敗しました :("
+            # puts "Error: #{e.message}"
         end
-        if phone_elements = document.querySelector("button[data-tooltip='電話番号をコピーします']")
-            phone = phone_elements&.textContent.split(" ")[0]
-            phone_number = phone.gsub(/[^0-9-]/, "")    # 数字とハイフン以外を削除
-            grid_div.querySelectorAll("input")[9].value = phone_number if phone_number
+        begin
+            if phone_elements = document.querySelector("button[data-tooltip='電話番号をコピーします']")
+                phone = phone_elements&.textContent.split(" ")[0]
+                phone_number = phone.gsub(/[^0-9-]/, "")    # 数字とハイフン以外を削除
+                grid_div.querySelectorAll("input")[9].value = phone_number if phone_number
+            end
+        rescue => e
+            puts "電話番号の取得に失敗しました :("
+            # puts "Error: #{e.message}"
         end
-        if url_elements = document.querySelector("a[data-tooltip='ウェブサイトを開きます']")
-            url = url_elements&.getAttribute("href")
-            grid_div.querySelectorAll("input")[10].value = url if url
+        begin
+            if url_elements = document.querySelector("a[data-tooltip='ウェブサイトを開きます']")
+                url = url_elements&.getAttribute("href")
+                grid_div.querySelectorAll("input")[10].value = url if url
+            end
+        rescue => e
+            puts "URLの取得に失敗しました :("
+            # puts "Error: #{e.message}"
         end
     end
     main_div.appendChild(get_value_button)
