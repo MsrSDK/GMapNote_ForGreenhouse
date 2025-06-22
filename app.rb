@@ -8,10 +8,10 @@ content_script site: "www.google.com/maps/*" do
     # スタイルを適用して画面右上に固定表示
     main_div.style.position = "fixed" # 画面に固定
     main_div.style.right = "0"        # 画面右端に配置
-    main_div.style.resize = "horizontal" # 横方向にリサイズ可能
-    main_div.style.overflow = "hidden" # 内容がはみ出した場合は隠す
+    main_div.style.resize = "both" # 横方向にリサイズ可能
+    main_div.style.overflow = "scroll" # 内容がはみ出した場合は隠す
     main_div.style.color = "black"    # 文字色
-    main_div.style.backgroundColor = "#e0ffff"    # 背景色
+    main_div.style.backgroundColor = "#CDF0EA"    # 背景色
     main_div.style.margin_top = "6px"  # 上側の余白
     main_div.style.padding = "6px"    # 内側の余白
     main_div.style.zIndex = "999"    # 他の要素より手前に表示
