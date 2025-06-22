@@ -42,15 +42,13 @@
   }
 
   button.unloosen-button {
+    &.small { padding: 2px; }
     &.secondary {
       background-color: #ffffff;
       color: blue;
       border: 2px solid blue;
       &:hover { background-color: #f0f0f0; }
       &:active { background-color: #b0c4de; }
-      &.small {
-        padding: 2px;
-      }
     }
     &.nutral {
       background-color: #ffffff;
@@ -58,9 +56,6 @@
       border: 2px solid #666;
       &:hover { background-color: #f0f0f0; }
       &:active { background-color: #b0c4de; }
-      &.small {
-        padding: 2px;
-      }
     }
     &.primary {
       background-color: #4169e1;
@@ -68,9 +63,13 @@
       border: 2px solid blue;
       &:hover { background-color: #6495ed; }
       &:active { background-color: brue; }
-      &.small {
-        padding: 2px;
-      }
+    }
+    &.danger-primary {
+      background-color: #ff6347;
+      color: #f5f5f5;
+      border: 2px solid red;
+      &:hover { background-color: #ff4500; }
+      &:active { background-color: #cd5c5c; }
     }
   }
 }

@@ -103,7 +103,7 @@ content_script site: "www.google.com/maps/*" do
             button_div = document.createElement("div")
             button_div.style.display = "flex"
             button_div.style.gap = "6px"
-            button_list = [["insert", "面積取得"], ["plus", "+"], ["times", "*"], ["minus", "-"], ["division", "/"], ["iquals", "="]]
+            button_list = [["insert", "面積取得"], ["AC", "AC"], ["plus", "+"], ["times", "*"], ["minus", "-"], ["division", "/"], ["iquals", "="]]
             button_list.each do |btn|
                 button_element = document.createElement("button")
                 button_element.textContent = btn[1]
@@ -111,6 +111,8 @@ content_script site: "www.google.com/maps/*" do
                 case btn[0]
                 when "insert"
                     button_element.classList.add("unloosen-button", "secondary", "small")
+                when "AC"
+                    button_element.classList.add("unloosen-button", "danger-primary", "small")
                 when "iquals"
                     button_element.classList.add("unloosen-button", "primary", "small")
                 else
@@ -160,6 +162,10 @@ content_script site: "www.google.com/maps/*" do
                         calc_str = document.querySelectorAll(".unloosen-area-calculation-input")[0].value
                         calc_str << " / "
                         document.querySelectorAll(".unloosen-area-calculation-input")[0].value = calc_str
+                    end
+                when "AC"
+                    button_element.addEventListener("click") do
+                        document.querySelectorAll(".unloosen-area-calculation-input")[0].value = ""
                     end
                 when "iquals"
                     button_element.addEventListener("click") do
