@@ -1,5 +1,6 @@
 # app.rb
 require "unloosen"
+require "json"
 
 content_script site: "www.google.com/maps/*" do
     main_div = document.createElement("div")
@@ -188,10 +189,14 @@ content_script site: "www.google.com/maps/*" do
         end
         main_div.appendChild(grid_div)
     end
+    bottom_btn_panel = document.createElement("div")
+    bottom_btn_panel.style.display = "flex"
+    bottom_btn_panel.style.padding = "6px"
+    bottom_btn_panel.style.flexDirection = "row"
+    bottom_btn_panel.style.gap = "6px"
     # 値抽出ボタンを作成
     get_value_button = document.createElement("button")
     get_value_button.textContent = "値を取得"
-    get_value_button.style.marginTop = "6px"
     get_value_button.classList.add("unloosen-button", "secondary")
     get_value_button.addEventListener("click") do
         begin
@@ -243,5 +248,72 @@ content_script site: "www.google.com/maps/*" do
             # puts "Error: #{e.message}"
         end
     end
-    main_div.appendChild(get_value_button)
+    bottom_btn_panel.appendChild(get_value_button)
+    main_div.appendChild(bottom_btn_panel)
+
+    def clear_inputs(grid_div)
+        [0,5,6,7,9,10,12,13,14,15].each do |i|
+            grid_div.querySelectorAll("input")[i].value = ""
+        end
+    end
+
+    # セーブボタンを作成
+    save_key = "unl_save_value"
+    save_value_button = document.createElement("button")
+    save_value_button.textContent = "保存"
+    save_value_button.style.marginTop = "6px"
+    save_value_button.classList.add("unloosen-button", "primary")
+    save_value_button.addEventListener("click") do
+        data_to_save = {
+            "顧客候補名" => grid_div.querySelectorAll("input")[0].value,
+            "サービス名"   => grid_div.querySelectorAll("input")[1].value,
+            "散布物"       => grid_div.querySelectorAll("input")[2].value,
+            "散布対象"     => grid_div.querySelectorAll("input")[3].value,
+            "情報元"       => grid_div.querySelectorAll("input")[4].value,
+            "都道府県"     => grid_div.querySelectorAll("input")[5].value,
+            "所在市区町村" => grid_div.querySelectorAll("input")[6].value,
+            "住所"        => grid_div.querySelectorAll("input")[7].value,
+            "部署"        => grid_div.querySelectorAll("input")[8].value,
+            "電話番号"    => grid_div.querySelectorAll("input")[9].value,
+            "URL"        => grid_div.querySelectorAll("input")[10].value,
+            "品目"       => grid_div.querySelectorAll("input")[11].value,
+            "棟形式"     => grid_div.querySelectorAll("select")[0].value,
+            "屋根形状"   => grid_div.querySelectorAll("select")[1].value,
+            "棟数"       => grid_div.querySelectorAll("input")[12].value,
+            "ハウス面積"  => grid_div.querySelectorAll("input")[14].value,
+            "備考"       => grid_div.querySelectorAll("input")[15].value,
+            "記載者"     => grid_div.querySelectorAll("input")[16].value,
+            "記載日"     => grid_div.querySelectorAll("input")[17].value
+        }
+        retrieved_json_string = JS.global[:localStorage].getItem(save_key)
+        if retrieved_json_string
+            begin
+                retrieved_array_data = JSON.load(retrieved_json_string)
+                if retrieved_array_data.is_a?(Array)
+                    retrieved_array_data.push(data_to_save)
+                    json_string_to_save = JSON.dump(retrieved_array_data)
+                    JS.global[:localStorage].setItem(save_key, json_string_to_save)
+                    puts ("レコードを保存しました")
+                    clear_inputs(grid_div)
+                end
+            rescue => e
+                puts "レコードの保存に失敗しました :("
+                puts "Error: #{e.message}"
+            end
+        else
+            begin
+                after_array = []
+                after_array.push(data_to_save)
+                json_string_to_save = JSON.dump(after_array)
+                JS.global[:localStorage].setItem(save_key, json_string_to_save)
+                puts ("レコードを保存しました")
+                clear_inputs(grid_div)
+            rescue => e
+                puts "レコードの保存に失敗しました :("
+                puts "Error: #{e.message}"
+            end
+        end
+    end
+    bottom_btn_panel.appendChild(save_value_button)
+    main_div.appendChild(bottom_btn_panel)
 end
