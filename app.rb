@@ -5,6 +5,7 @@ require "json"
 content_script site: "www.google.com/maps/*" do
     main_div = document.createElement("div")
     main_div.id = "unloosen-main-div"
+    save_key = "unl_save_value"
 
     # スタイルを適用して画面右上に固定表示
     main_div.style.position = "fixed" # 画面に固定
@@ -258,7 +259,6 @@ content_script site: "www.google.com/maps/*" do
     end
 
     # セーブボタンを作成
-    save_key = "unl_save_value"
     save_value_button = document.createElement("button")
     save_value_button.textContent = "保存"
     save_value_button.style.marginTop = "6px"
@@ -315,5 +315,91 @@ content_script site: "www.google.com/maps/*" do
         end
     end
     bottom_btn_panel.appendChild(save_value_button)
+
+    def create_table(retrieved_array_data)
+        table_element = document.createElement("table")
+        table_element.style.width = "90%"
+        table_element.border_collapse = "collapse"
+        table_element.margin = "12px"
+        table_header = document.createElement("thead")
+        header_row = document.createElement("tr")
+        key_array = retrieved_array_data[0].keys
+        key_array.each do |key|
+            th = document.createElement("th")
+            th.textContent = key
+            header_row.appendChild(th)
+        end
+        table_header.appendChild(header_row)
+        table_element.appendChild(table_header)
+        # データ行作成
+        table_body = document.createElement("tbody")
+        retrieved_array_data.each do |row_data|
+            tr = document.createElement("tr")
+            row_data.values.each do |value|
+                td = document.createElement("td")
+                td.textContent = value
+                tr.appendChild(td)
+            end
+            table_body.appendChild(tr)
+        end
+        table_element.appendChild(table_body)
+        table_element
+    end
+
+    def show_modal(content_container, save_key)
+        retrieved_json_string = JS.global[:localStorage].getItem(save_key)
+        if retrieved_json_string
+            begin
+                retrieved_array_data = JSON.load(retrieved_json_string)
+                if retrieved_array_data.is_a?(Array)
+                    table = create_table(retrieved_array_data)
+                end
+            rescue => e
+                puts "レコードの保存に失敗しました :("
+                puts "Error: #{e.message}"
+            end
+        else
+            puts "レコードが見つかりませんでした"
+            exit(0)
+        end
+
+        modal_con = document.createElement("div")
+        modal_con.style.position = "absolute"
+        modal_con.style.margin = "auto"
+        modal_con.style.height = "80%"
+        modal_con.style.width = "80%"
+        modal_con.style.resize = "both"
+        modal_con.style.top = "0"
+        modal_con.style.bottom = "0"
+        modal_con.style.left = "0"
+        modal_con.style.right = "0"
+        modal_con.style.overflow = "scroll" # 内容がはみ出した場合は隠す
+        modal_con.style.color = "black"    # 文字色
+        modal_con.style.backgroundColor = "#F9F9F9"    # 背景色
+        modal_con.style.margin_top = "6px"  # 上側の余白
+        modal_con.style.padding = "6px"    # 内側の余白
+        modal_con.style.zIndex = "1000"    # 他の要素より手前に表示
+        modal_close_btn = document.createElement("button")
+        modal_close_btn.textContent = "閉じる"
+        modal_close_btn.style.marginTop = "6px"
+        modal_close_btn.classList.add("unloosen-button", "secondary")
+        modal_close_btn.addEventListener("click") do
+            modal_con.remove
+        end
+        modal_con.appendChild(table)
+        modal_con.appendChild(modal_close_btn)
+        content_container.appendChild(modal_con) if content_container
+    end
+
+    # テーブル表示ボタン作成
+    show_table_button = document.createElement("button")
+    show_table_button.textContent = "保存データ表示"
+    show_table_button.style.marginTop = "6px"
+    show_table_button.classList.add("unloosen-button", "show-modal")
+    show_table_button.addEventListener("click") do
+        show_modal(content_container, save_key)
+    end
+
+    bottom_btn_panel.appendChild(show_table_button)
     main_div.appendChild(bottom_btn_panel)
 end
