@@ -410,6 +410,7 @@ content_script site: "www.google.com/maps/*" do
         delete_record_btn.classList.add("unloosen-button", "danger-primary")
         delete_record_btn.addEventListener("click") do
             JS.global[:localStorage].removeItem(save_key)
+            modal_con.remove
         end
         modal_btn_wrapper.appendChild(modal_close_btn)
         modal_btn_wrapper.appendChild(delete_record_btn)
