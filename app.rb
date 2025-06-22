@@ -286,8 +286,10 @@ content_script site: "www.google.com/maps/*" do
             "記載日"     => grid_div.querySelectorAll("input")[17].value
         }
         retrieved_json_string = JS.global[:localStorage].getItem(save_key)
-        if retrieved_json_string
+        puts retrieved_json_string.to_s.length
+        if retrieved_json_string.to_s.length > 5
             begin
+                puts "レコード追加"
                 retrieved_array_data = JSON.load(retrieved_json_string)
                 if retrieved_array_data.is_a?(Array)
                     retrieved_array_data.push(data_to_save)
@@ -302,6 +304,7 @@ content_script site: "www.google.com/maps/*" do
             end
         else
             begin
+                puts "レコード新規作成"
                 after_array = []
                 after_array.push(data_to_save)
                 json_string_to_save = JSON.dump(after_array)
