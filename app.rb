@@ -1,9 +1,11 @@
 # app.rb
 require "unloosen"
+require "json"
 
 content_script site: "www.google.com/maps/*" do
     main_div = document.createElement("div")
     main_div.id = "unloosen-main-div"
+    save_key = "unl_save_value"
 
     # スタイルを適用して画面右上に固定表示
     main_div.style.position = "fixed" # 画面に固定
@@ -188,10 +190,14 @@ content_script site: "www.google.com/maps/*" do
         end
         main_div.appendChild(grid_div)
     end
+    bottom_btn_panel = document.createElement("div")
+    bottom_btn_panel.style.display = "flex"
+    bottom_btn_panel.style.padding = "6px"
+    bottom_btn_panel.style.flexDirection = "row"
+    bottom_btn_panel.style.gap = "6px"
     # 値抽出ボタンを作成
     get_value_button = document.createElement("button")
     get_value_button.textContent = "値を取得"
-    get_value_button.style.marginTop = "6px"
     get_value_button.classList.add("unloosen-button", "secondary")
     get_value_button.addEventListener("click") do
         begin
@@ -243,5 +249,186 @@ content_script site: "www.google.com/maps/*" do
             # puts "Error: #{e.message}"
         end
     end
-    main_div.appendChild(get_value_button)
+    bottom_btn_panel.appendChild(get_value_button)
+    main_div.appendChild(bottom_btn_panel)
+
+    def clear_inputs(grid_div)
+        [0,5,6,7,9,10,12,13,14,15].each do |i|
+            grid_div.querySelectorAll("input")[i].value = ""
+        end
+    end
+
+    # セーブボタンを作成
+    save_value_button = document.createElement("button")
+    save_value_button.textContent = "保存"
+    save_value_button.style.marginTop = "6px"
+    save_value_button.classList.add("unloosen-button", "primary")
+    save_value_button.addEventListener("click") do
+        data_to_save = {
+            "顧客候補名" => grid_div.querySelectorAll("input")[0].value,
+            "サービス名"   => grid_div.querySelectorAll("input")[1].value,
+            "散布物"       => grid_div.querySelectorAll("input")[2].value,
+            "散布対象"     => grid_div.querySelectorAll("input")[3].value,
+            "情報元"       => grid_div.querySelectorAll("input")[4].value,
+            "都道府県"     => grid_div.querySelectorAll("input")[5].value,
+            "所在市区町村" => grid_div.querySelectorAll("input")[6].value,
+            "住所"        => grid_div.querySelectorAll("input")[7].value,
+            "部署"        => grid_div.querySelectorAll("input")[8].value,
+            "電話番号"    => grid_div.querySelectorAll("input")[9].value,
+            "URL"        => grid_div.querySelectorAll("input")[10].value,
+            "品目"       => grid_div.querySelectorAll("input")[11].value,
+            "棟形式"     => grid_div.querySelectorAll("select")[0].value,
+            "屋根形状"   => grid_div.querySelectorAll("select")[1].value,
+            "棟数"       => grid_div.querySelectorAll("input")[12].value,
+            "ハウス面積"  => grid_div.querySelectorAll("input")[14].value,
+            "備考"       => grid_div.querySelectorAll("input")[15].value,
+            "記載者"     => grid_div.querySelectorAll("input")[16].value,
+            "記載日"     => grid_div.querySelectorAll("input")[17].value
+        }
+        retrieved_json_string = JS.global[:localStorage].getItem(save_key)
+        puts retrieved_json_string.to_s.length
+        if retrieved_json_string.to_s.length > 5
+            begin
+                puts "レコード追加"
+                retrieved_array_data = JSON.load(retrieved_json_string)
+                if retrieved_array_data.is_a?(Array)
+                    retrieved_array_data.push(data_to_save)
+                    json_string_to_save = JSON.dump(retrieved_array_data)
+                    JS.global[:localStorage].setItem(save_key, json_string_to_save)
+                    puts ("レコードを保存しました")
+                    clear_inputs(grid_div)
+                end
+            rescue => e
+                puts "レコードの保存に失敗しました :("
+                puts "Error: #{e.message}"
+            end
+        else
+            begin
+                puts "レコード新規作成"
+                after_array = []
+                after_array.push(data_to_save)
+                json_string_to_save = JSON.dump(after_array)
+                JS.global[:localStorage].setItem(save_key, json_string_to_save)
+                puts ("レコードを保存しました")
+                clear_inputs(grid_div)
+            rescue => e
+                puts "レコードの保存に失敗しました :("
+                puts "Error: #{e.message}"
+            end
+        end
+    end
+
+    def create_table(retrieved_array_data)
+        table_element = document.createElement("table")
+        table_element.style.width = "100%"
+        table_element.style.tableLayout = "fixed"
+        table_element.border_collapse = "collapse"
+        table_element.margin = "12px"
+        table_header = document.createElement("thead")
+        table_header.style.backgroundColor = "#CDF0EA"
+        header_row = document.createElement("tr")
+        key_array = retrieved_array_data[0].keys
+        key_array.each do |key|
+            th = document.createElement("th")
+            th.textContent = key
+            header_row.appendChild(th)
+        end
+        table_header.appendChild(header_row)
+        table_element.appendChild(table_header)
+        # データ行作成
+        table_body = document.createElement("tbody")
+        retrieved_array_data.each do |row_data|
+            tr = document.createElement("tr")
+            row_data.values.each do |value|
+                td = document.createElement("td")
+                td.textContent = value
+                tr.appendChild(td)
+            end
+            table_body.appendChild(tr)
+        end
+        table_element.appendChild(table_body)
+        table_element
+    end
+
+    def show_modal(content_container, save_key)
+        retrieved_json_string = JS.global[:localStorage].getItem(save_key)
+        if retrieved_json_string
+            begin
+                retrieved_array_data = JSON.load(retrieved_json_string)
+                if retrieved_array_data.is_a?(Array)
+                    table_wrapper = document.createElement("div")
+                    table_wrapper.margin = "12px"
+                    table_wrapper.style.scroll = "hidden"
+                    table = create_table(retrieved_array_data)
+                    table_wrapper.appendChild(table)
+                end
+            rescue => e
+                puts "レコードの保存に失敗しました :("
+                puts "Error: #{e.message}"
+            end
+        else
+            puts "レコードが見つかりませんでした"
+            exit(0)
+        end
+
+        modal_con = document.createElement("div")
+        modal_con.id = "unloosen-modal-div"
+        modal_con.style.position = "absolute"
+        modal_con.style.margin = "auto"
+        modal_con.style.height = "80%"
+        modal_con.style.width = "80%"
+        modal_con.style.resize = "both"
+        modal_con.style.top = "0"
+        modal_con.style.bottom = "0"
+        modal_con.style.left = "0"
+        modal_con.style.right = "0"
+        modal_con.style.overflow = "scroll" # 内容がはみ出した場合は隠す
+        modal_con.style.color = "black"    # 文字色
+        modal_con.style.backgroundColor = "#F9F9F9"    # 背景色
+        modal_con.style.margin_top = "6px"  # 上側の余白
+        modal_con.style.padding = "6px"    # 内側の余白
+        modal_con.style.zIndex = "1000"    # 他の要素より手前に表示
+        modal_btn_wrapper = document.createElement("div")
+        modal_btn_wrapper.style.display = "flex"
+        modal_btn_wrapper.style.width = "100%"
+        modal_btn_wrapper.style.bottom = "0"
+        modal_btn_wrapper.style.justifyContent = "flexEnd"
+        # モーダル閉じるボタン
+        modal_close_btn = document.createElement("button")
+        modal_close_btn.textContent = "閉じる"
+        modal_close_btn.position = "flex"
+        modal_close_btn.bottom = "0"
+        modal_close_btn.style.marginTop = "6px"
+        modal_close_btn.classList.add("unloosen-button", "nutral")
+        modal_close_btn.addEventListener("click") do
+            modal_con.remove
+        end
+        # レコード一括削除ボタン
+        delete_record_btn = document.createElement("button")
+        delete_record_btn.textContent = "レコード一括削除"
+        delete_record_btn.style.marginLeft = "12px"
+        delete_record_btn.classList.add("unloosen-button", "danger-primary")
+        delete_record_btn.addEventListener("click") do
+            JS.global[:localStorage].removeItem(save_key)
+            modal_con.remove
+        end
+        modal_btn_wrapper.appendChild(modal_close_btn)
+        modal_btn_wrapper.appendChild(delete_record_btn)
+        modal_con.appendChild(table_wrapper)
+        modal_con.appendChild(modal_btn_wrapper)
+        content_container.appendChild(modal_con) if content_container
+    end
+
+    # テーブル表示ボタン作成
+    show_table_button = document.createElement("button")
+    show_table_button.textContent = "保存データ表示"
+    show_table_button.style.marginTop = "6px"
+    show_table_button.classList.add("unloosen-button", "show-modal")
+    show_table_button.addEventListener("click") do
+        show_modal(content_container, save_key)
+    end
+
+    bottom_btn_panel.appendChild(show_table_button)
+    bottom_btn_panel.appendChild(save_value_button)
+    main_div.appendChild(bottom_btn_panel)
 end
