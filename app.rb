@@ -166,6 +166,7 @@ content_script site: "www.google.com/maps/*" do
                 when "AC"
                     button_element.addEventListener("click") do
                         document.querySelectorAll(".unloosen-area-calculation-input")[0].value = ""
+                        document.querySelectorAll(".unloosen-area-input")[0].value = ""
                     end
                 when "iquals"
                     button_element.addEventListener("click") do
