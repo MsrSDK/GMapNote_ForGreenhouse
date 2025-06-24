@@ -323,7 +323,6 @@ content_script site: "www.google.com/maps/*" do
         table_element.style.width = "100%"
         table_element.style.tableLayout = "fixed"
         table_element.border_collapse = "collapse"
-        table_element.margin = "12px"
         table_header = document.createElement("thead")
         table_header.style.backgroundColor = "#CDF0EA"
         header_row = document.createElement("tr")
@@ -384,20 +383,14 @@ content_script site: "www.google.com/maps/*" do
         modal_con.style.right = "0"
         modal_con.style.overflow = "scroll" # 内容がはみ出した場合は隠す
         modal_con.style.color = "black"    # 文字色
-        modal_con.style.backgroundColor = "#F9F9F9"    # 背景色
-        modal_con.style.margin_top = "6px"  # 上側の余白
+        modal_con.style.backgroundColor = "#FFFFFF"    # 背景色
         modal_con.style.padding = "6px"    # 内側の余白
         modal_con.style.zIndex = "1000"    # 他の要素より手前に表示
         modal_btn_wrapper = document.createElement("div")
-        modal_btn_wrapper.style.display = "flex"
-        modal_btn_wrapper.style.width = "100%"
-        modal_btn_wrapper.style.bottom = "0"
         modal_btn_wrapper.style.justifyContent = "flexEnd"
         # モーダル閉じるボタン
         modal_close_btn = document.createElement("button")
         modal_close_btn.textContent = "閉じる"
-        modal_close_btn.position = "flex"
-        modal_close_btn.bottom = "0"
         modal_close_btn.style.marginTop = "6px"
         modal_close_btn.classList.add("unloosen-button", "nutral")
         modal_close_btn.addEventListener("click") do

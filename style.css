@@ -111,5 +111,7 @@
       &:active { background-color: rgb(177, 0, 0); }
     }
   }
-  th, td { border: solid 1px; }
+  table {
+    font-size: 12px;
+  }
 }
