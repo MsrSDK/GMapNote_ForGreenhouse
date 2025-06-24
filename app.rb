@@ -72,7 +72,7 @@ content_script site: "www.google.com/maps/*" do
         when "棟形式"
             select_element = document.createElement("select")
             grid_div.appendChild(select_element)
-            for option in ["単棟", "連棟"]
+            for option in ["", "単棟", "連棟"]
                 option_element = document.createElement("option")
                 option_element.value = option
                 option_element.textContent = option
@@ -81,7 +81,7 @@ content_script site: "www.google.com/maps/*" do
         when "屋根形状"
             select_element = document.createElement("select")
             grid_div.appendChild(select_element)
-            for option in ["丸屋根型(パイプハウス等)", "屋根型(フェンロー型等)"]
+            for option in ["", "丸屋根型(パイプハウス等)", "屋根型(フェンロー型等)"]
                 option_element = document.createElement("option")
                 option_element.value = option
                 option_element.textContent = option
