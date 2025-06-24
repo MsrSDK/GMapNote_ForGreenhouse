@@ -201,7 +201,11 @@ content_script site: "www.google.com/maps/*" do
     get_value_button.classList.add("unloosen-button", "secondary")
     get_value_button.addEventListener("click") do
         begin
-            if c_name = document.getElementsByTagName("h1")[0]&.textContent
+            if h1_tags = document.querySelectorAll("h1")
+                c_name = ""
+                h1_tags.length.to_i.times do |i|
+                    c_name = h1_tags[i]&.textContent
+                end
                 grid_div.querySelectorAll("input")[0].value = c_name
             end
         rescue => e
