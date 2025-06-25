@@ -2,7 +2,7 @@
     "manifest_version": 3,
     "name": "GMapNote_ForGreenhouse",
     "description": "Retrieve the contents of the GoogleMap display and record them as a memo.",
-    "version": "0.0.1",
+    "version": "1.0.1",
     "content_scripts": [
         {
             "js": [
