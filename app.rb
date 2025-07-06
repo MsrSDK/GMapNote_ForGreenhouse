@@ -1,7 +1,7 @@
-# encoding: utf-8
 # app.rb
 require "unloosen"
 require "json"
+require 'nkf'
 
 content_script site: "www.google.com/maps/*" do
     main_div = document.createElement("div")
@@ -345,7 +345,8 @@ content_script site: "www.google.com/maps/*" do
             tr = document.createElement("tr")
             row_data.values.each do |value|
                 td = document.createElement("td")
-                td.textContent = value.tr('０-９－', '0-9-')
+                encoded_value = NKF.nkf('-w -Z1 -Z', value)
+                td.textContent = encoded_value
                 tr.appendChild(td)
             end
             table_body.appendChild(tr)
