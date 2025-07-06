@@ -1,3 +1,4 @@
+# encoding: utf-8
 # app.rb
 require "unloosen"
 require "json"
@@ -344,7 +345,7 @@ content_script site: "www.google.com/maps/*" do
             tr = document.createElement("tr")
             row_data.values.each do |value|
                 td = document.createElement("td")
-                td.textContent = value
+                td.textContent = value.tr('０-９－', '0-9-')
                 tr.appendChild(td)
             end
             table_body.appendChild(tr)
@@ -366,7 +367,7 @@ content_script site: "www.google.com/maps/*" do
                     table_wrapper.appendChild(table)
                 end
             rescue => e
-                puts "レコードの保存に失敗しました :("
+                puts "モーダルの表示に失敗しました :("
                 puts "Error: #{e.message}"
             end
         else
