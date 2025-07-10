@@ -8,7 +8,10 @@
             "js": [
                 "node_modules/unloosen-ruby-loader/dist/entry/loader-content-script.esm.js"
             ],
-            "matches": ["https://www.google.com/maps/*"],
+            "matches": [
+                "https://www.google.com/maps/*",
+                "https://www.google.co.jp/maps/*"
+            ],
             "css": ["style.css"]
         }
     ],

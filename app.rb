@@ -3,7 +3,7 @@ require "unloosen"
 require "json"
 require 'nkf'
 
-content_script site: "www.google.com/maps/*" do
+content_script site: "www.google*" do
     main_div = document.createElement("div")
     main_div.id = "unloosen-main-div"
     save_key = "unl_save_value"
